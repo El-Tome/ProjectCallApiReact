@@ -18,6 +18,6 @@ api_platform:
             standard_put: true
     swagger:
         api_keys:
-            apiKey:
+            JWT:
                 name: Authorization
                 type: header
