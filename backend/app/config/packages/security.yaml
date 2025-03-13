@@ -29,5 +29,6 @@ security:
         - { path: ^/api$, roles: PUBLIC_ACCESS }                 # Swagger UI docs exactement sur /api
         - { path: ^/api/register, roles: PUBLIC_ACCESS }         # Inscription publique
         - { path: ^/auth, roles: PUBLIC_ACCESS }                 # Authentification JWT publique
+        - { path: ^/api/blogs, methods: [GET], roles: PUBLIC_ACCESS }
         - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }        # Toutes les autres routes /api sécurisées
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

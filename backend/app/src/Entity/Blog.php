@@ -3,33 +3,66 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Dto\BlogDto;
+use App\State\PostBlogProcessor;
 use App\Repository\BlogRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use App\State\PutBlogProcessor;
+
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            input: BlogDto::class,
+            processor: PostBlogProcessor::class
+        ),
+        new Put(
+            security: "is_granted('ROLE_USER') and object.getAuthor() == user",
+            input: BlogDto::class,
+            processor: PutBlogProcessor::class
+        ),
+        new Get(normalizationContext: ['groups' => ['blog:read', 'user:read']]),
+        new GetCollection(normalizationContext: ['groups' => ['blog:read', 'user:read']]),
+        new Delete(security: "is_granted('ROLE_USER') and object.getAuthor() == user")
+    ],
+    normalizationContext: ['groups' => ['blog:read']]
+)]
 class Blog
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['blog:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['blog:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['blog:read'])]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['blog:read'])]
     private ?\DateTimeInterface $dateAdd = null;
 
     #[ORM\ManyToOne(inversedBy: 'blogs')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['blog:read'])]
     private ?User $author = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['blog:read'])]
     private ?\DateTimeInterface $dateUpdate = null;
 
     public function getId(): ?int
