@@ -10,6 +10,7 @@ use App\Entity\User;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -26,14 +27,13 @@ readonly class PostBlogProcessor implements ProcessorInterface
         array     $uriVariables = [],
         array     $context      = []
     ): mixed
-    {
+    {   
         if (!$data instanceof BlogDto) {
-            $errorMessage = json_encode([
+            return new JsonResponse([
                 'status' => 400,
                 'success' => false,
                 'message' => 'Le format de données est incorrect'
-            ]);
-            throw new BadRequestHttpException($errorMessage);
+            ], 400);
         }
 
         // Récupérer l'utilisateur actuellement authentifié
@@ -41,12 +41,11 @@ readonly class PostBlogProcessor implements ProcessorInterface
         
         // Vérifier si l'utilisateur est authentifié
         if (!$user instanceof User) {
-            $errorMessage = json_encode([
+            return new JsonResponse([
                 'status' => 401,
                 'success' => false,
                 'message' => 'Vous devez être connecté pour créer un blog'
-            ]);
-            throw new AccessDeniedException($errorMessage);
+            ], 401);
         }
 
         $blog = new Blog();

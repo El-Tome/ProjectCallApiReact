@@ -10,9 +10,7 @@ use App\Entity\User;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 readonly class PutBlogProcessor implements ProcessorInterface
 {
@@ -29,21 +27,19 @@ readonly class PutBlogProcessor implements ProcessorInterface
     ): mixed
     {
         if (!$data instanceof BlogDto) {
-            $errorMessage = json_encode([
+            return new JsonResponse([
                 'status' => 400,
                 'success' => false,
                 'message' => 'Le format de données est incorrect'
-            ]);
-            throw new BadRequestHttpException($errorMessage);
+            ], 400);
         }
 
         if (empty($uriVariables['id'])) {
-            $errorMessage = json_encode([
+            return new JsonResponse([
                 'status' => 400,
                 'success' => false,
                 'message' => 'L\'id du blog est obligatoire'
-            ]);
-            throw new BadRequestHttpException($errorMessage);
+            ], 400);
         }
 
         // Récupérer l'utilisateur actuellement authentifié
@@ -51,34 +47,31 @@ readonly class PutBlogProcessor implements ProcessorInterface
 
         // Vérifier si l'utilisateur est authentifié
         if (!$user instanceof User) {
-            $errorMessage = json_encode([
+            return new JsonResponse([
                 'status' => 401,
                 'success' => false,
                 'message' => 'Vous devez être connecté pour modifier un blog'
-            ]);
-            throw new AccessDeniedException($errorMessage);
+            ], 401);
         }
 
         // Récupérer le blog
         $blog = $this->entityManager->getRepository(Blog::class)->find($uriVariables['id']);
 
         if (!$blog) {
-            $errorMessage = json_encode([
+            return new JsonResponse([
                 'status' => 404,
                 'success' => false,
                 'message' => 'Aucun blog trouvé avec l\'id '. $uriVariables['id']
-            ]);
-            throw new NotFoundHttpException($errorMessage);
+            ], 404);
         }
 
         // Vérifier si le blog appartient bien à l'utilisateur connecté
         if ($blog->getAuthor()!== $user) {
-            $errorMessage = json_encode([
+            return new JsonResponse([
                 'status' => 403,
                 'success' => false,
                 'message' => 'Vous ne pouvez modifier un blog que si vous êtes son auteur'
-            ]);
-            throw new AccessDeniedException($errorMessage);
+            ], 403);
         }
 
         // Mise à jour du blog

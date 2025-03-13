@@ -17,7 +17,7 @@ security:
             stateless: true
             provider: app_user_provider
             json_login:
-                check_path: auth # The name in routes.yaml is enough for mapping
+                check_path: api_auth
                 username_path: email
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
@@ -28,7 +28,7 @@ security:
         - { path: ^/$, roles: PUBLIC_ACCESS }                    # Swagger UI à la racine
         - { path: ^/api$, roles: PUBLIC_ACCESS }                 # Swagger UI docs exactement sur /api
         - { path: ^/api/register, roles: PUBLIC_ACCESS }         # Inscription publique
-        - { path: ^/auth, roles: PUBLIC_ACCESS }                 # Authentification JWT publique
+        - { path: ^/api/auth, roles: PUBLIC_ACCESS }             # Modifié de '/auth' à '/api/auth'
         - { path: ^/api/blogs, methods: [GET], roles: PUBLIC_ACCESS }
         - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }        # Toutes les autres routes /api sécurisées
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
