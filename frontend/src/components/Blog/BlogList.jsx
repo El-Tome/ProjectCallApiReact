@@ -12,9 +12,18 @@ const BlogList = () => {
     const fetchBlogs = async () => {
       try {
         const data = await api.getBlogs();
-        setBlogs(data['hydra:member'] || data);
+        console.log("Données reçues de l'API:", data);
+        
+        // Extraire les blogs de la propriété "member"
+        if (data && data.member && Array.isArray(data.member)) {
+          setBlogs(data.member);
+        } else {
+          setBlogs([]);
+        }
+        
         setLoading(false);
       } catch (error) {
+        console.error("Erreur lors du chargement des blogs:", error);
         setError('Erreur lors du chargement des blogs');
         setLoading(false);
       }
