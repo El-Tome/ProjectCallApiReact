@@ -56,6 +56,17 @@ export const api = {
         return response.json();
     },
 
+    // get user blogs
+    getUserBlogs: async () => {
+        const token = localStorage.getItem('jwt');
+        const response = await fetch(`${API_URL}/user/blogs`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.json();
+    },
+
     // update blog
     updateBlog: async (id, blog) => {
         const token = localStorage.getItem('jwt');

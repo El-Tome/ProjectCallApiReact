@@ -24,6 +24,9 @@ const Header = () => {
                   <Link to="/blogs/new" className="nav-link">Nouveau Blog</Link>
                 </li>
                 <li className="nav-item">
+                  <Link to="/my-blogs" className="nav-link">Mes Blogs</Link>
+                </li>
+                <li className="nav-item">
                   <button onClick={handleLogout} className="nav-link btn-link">
                     Déconnexion
                   </button>

@@ -11,11 +11,12 @@ use ApiPlatform\Metadata\Put;
 use App\Dto\BlogDto;
 use App\State\PostBlogProcessor;
 use App\Repository\BlogRepository;
+use App\State\GetUserBlogsProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\State\PutBlogProcessor;
-
+use ApiPlatform\Metadata\Link;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
 #[ApiResource(
@@ -35,6 +36,17 @@ use App\State\PutBlogProcessor;
         new Delete(security: "is_granted('ROLE_USER') and object.getAuthor() == user")
     ],
     normalizationContext: ['groups' => ['blog:read']]
+)]
+#[ApiResource(
+    uriTemplate: '/user/blogs',
+    operations: [
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            provider: GetUserBlogsProvider::class,
+            normalizationContext: ['groups' => ['blog:read', 'user:read']],
+            name: 'get_user_blogs'
+        )
+    ]
 )]
 class Blog
 {

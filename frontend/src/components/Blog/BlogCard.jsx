@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
+import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 
-const BlogCard = ({ blog }) => {
+const BlogCard = ({ blog, showActions = false }) => {
   // Vérifier que blog existe
   if (!blog) return null;
 
@@ -33,9 +34,33 @@ const BlogCard = ({ blog }) => {
       <p className="blog-excerpt">
         {getContentExcerpt()}
       </p>
-      <Link to={`/blogs/${blog.id}`} className="blog-link">
-        Lire la suite
-      </Link>
+      <div className="blog-card-actions">
+        <Link 
+          to={`/blogs/${blog.id}`} 
+          state={{ from: showActions ? '/my-blogs' : '/' }}
+          className="blog-link"
+        >
+          <FaEye style={{ marginRight: '5px' }} /> Lire
+        </Link>
+        
+        {showActions && (
+          <>
+            <Link 
+              to={`/blogs/${blog.id}/edit`}
+              className="blog-edit-link"
+            >
+              <FaEdit style={{ marginRight: '5px' }} /> Modifier
+            </Link>
+            <Link 
+              to={`/blogs/${blog.id}`} 
+              state={{ from: '/my-blogs' }}
+              className="blog-delete-link"
+            >
+              <FaTrash style={{ marginRight: '5px' }} /> Supprimer
+            </Link>
+          </>
+        )}
+      </div>
     </div>
   );
 };

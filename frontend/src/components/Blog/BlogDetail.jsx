@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { api } from '../../services/api';
+import { FaArrowLeft, FaEdit, FaTrash } from 'react-icons/fa';
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -8,6 +9,10 @@ const BlogDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Vérifie si on vient de la page "Mes Blogs"
+  const isFromMyBlogsPage = location.state?.from === '/my-blogs';
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -28,7 +33,7 @@ const BlogDetail = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce blog ?')) {
       try {
         await api.deleteBlog(id);
-        navigate('/');
+        navigate(isFromMyBlogsPage ? '/my-blogs' : '/');
       } catch (error) {
         setError('Erreur lors de la suppression du blog');
       }
@@ -53,16 +58,14 @@ const BlogDetail = () => {
     return <div className="not-found">Blog non trouvé</div>;
   }
 
-  // Vérifier si l'utilisateur est connecté et est l'auteur du blog
+  // Vérifie si l'utilisateur est l'auteur du blog
   const token = localStorage.getItem('jwt');
-  // Note: Dans une application réelle, vous devriez décoder le token pour vérifier l'ID de l'utilisateur
-  // et le comparer avec l'ID de l'auteur du blog
   const isAuthor = token && blog.author; // Simplifié pour l'exemple
 
   return (
     <div className="blog-detail-container">
-      <Link to="/" className="back-link">
-        &larr; Retour à la liste
+      <Link to={location.state?.from || "/"} className="back-link">
+        <FaArrowLeft style={{ marginRight: '8px' }} /> Retour
       </Link>
 
       <article className="blog-detail">
@@ -78,13 +81,13 @@ const BlogDetail = () => {
           {blog.content}
         </div>
         
-        {isAuthor && (
+        {isAuthor && isFromMyBlogsPage && (
           <div className="blog-actions">
-            <Link to={`/blogs/${blog.id}/edit`} className="btn btn-edit">
-              Modifier
+            <Link to={`/blogs/${blog.id}/edit`} className="btn-edit">
+              <FaEdit style={{ marginRight: '8px' }} /> Modifier
             </Link>
-            <button onClick={handleDelete} className="btn btn-delete">
-              Supprimer
+            <button onClick={handleDelete} className="btn-delete">
+              <FaTrash style={{ marginRight: '8px' }} /> Supprimer
             </button>
           </div>
         )}
