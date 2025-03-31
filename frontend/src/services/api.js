@@ -91,6 +91,31 @@ export const api = {
             },
         });
         return response.json();
-    },  
+    },
+
+    // get user profile
+    getUserProfile: async () => {
+        const token = localStorage.getItem('jwt');
+        const response = await fetch(`${API_URL}/user/profile`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.json();
+    },
+
+    // update user profile
+    updateUserProfile: async (userData) => {
+        const token = localStorage.getItem('jwt');
+        const response = await fetch(`${API_URL}/user/profile`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(userData),
+        });
+        return response.json();
+    },
 };
 

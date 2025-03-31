@@ -8,6 +8,7 @@ import PrivateRoute from './components/common/PrivateRoute';
 // Composants Auth
 import Login    from './components/Auth/Login';
 import Register from './components/Auth/Register';
+import Profile  from './components/Auth/Profile';
 
 // Composants Blog
 import BlogList     from './components/Blog/BlogList';
@@ -31,6 +32,7 @@ function App() {
             <Route path="/blogs/new"      element={<BlogForm />} />
             <Route path="/blogs/:id/edit" element={<BlogForm />} />
             <Route path="/my-blogs"       element={<UserBlogList />} />
+            <Route path="/profile"        element={<Profile />} />
           </Route>
         </Routes>
       </Layout>
