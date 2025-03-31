@@ -24,11 +24,39 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await api.register(formData);
-      if (response.id) {
-        navigate('/login', { state: { message: 'Inscription réussie ! Vous pouvez maintenant vous connecter.' } });
+      // Étape 1: Inscription de l'utilisateur
+      const registerResponse = await api.register(formData);
+      
+      if (registerResponse.success) {
+        // Étape 2: Si l'inscription est réussie, connecter l'utilisateur automatiquement
+        try {
+          const loginResponse = await api.login({
+            email: formData.email,
+            password: formData.password
+          });
+          
+          if (loginResponse.token) {
+            // Stocker le token et rediriger vers la page d'accueil
+            localStorage.setItem('jwt', loginResponse.token);
+            navigate('/');
+          } else {
+            // Si la connexion automatique échoue, rediriger vers la page de connexion
+            navigate('/login', { 
+              state: { 
+                message: 'Inscription réussie ! Veuillez vous connecter avec vos identifiants.' 
+              } 
+            });
+          }
+        } catch (loginError) {
+          // En cas d'erreur de connexion, rediriger vers la page de connexion
+          navigate('/login', { 
+            state: { 
+              message: 'Inscription réussie ! Veuillez vous connecter avec vos identifiants.' 
+            } 
+          });
+        }
       } else {
-        setError(response.message || 'Une erreur est survenue lors de l\'inscription');
+        setError(registerResponse.message || 'Une erreur est survenue lors de l\'inscription');
       }
     } catch (error) {
       setError('Une erreur est survenue lors de l\'inscription');
