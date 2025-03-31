@@ -12,3 +12,4 @@ class BlogDto
     #[Assert\NotBlank]
     public string $content;
 }
+
