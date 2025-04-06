@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import checkIsAdmin from '../../services/checkIsAdmin';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ const Header = () => {
     localStorage.removeItem('jwt');
     navigate('/');
   };
+  const isAdmin = checkIsAdmin();
 
   return (
     <header className="header">
@@ -26,6 +28,11 @@ const Header = () => {
                 <li className="nav-item">
                   <Link to="/my-blogs" className="nav-link">Mes Blogs</Link>
                 </li>
+                {isAdmin && (
+                  <li className="nav-item">
+                    <Link to="/admin/users" className="nav-link">Administration</Link>
+                  </li>
+                )}
                 <li className="nav-item">
                   <button onClick={handleLogout} className="nav-link btn-link">
                     Déconnexion

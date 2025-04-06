@@ -117,5 +117,17 @@ export const api = {
         });
         return response.json();
     },
+
+    // get all users
+    getUsers: async () => {
+        const token = localStorage.getItem('jwt');
+
+        const response = await fetch(`${API_URL}/admin/users`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.json();
+    }
 };
 

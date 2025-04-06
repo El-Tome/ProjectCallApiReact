@@ -565,3 +565,53 @@ body {
     width: 100%;
   }
 }
+
+/* Styles pour la table d'administration */
+.admin-container {
+  padding: 30px 0;
+}
+
+.admin-container h1 {
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 2rem;
+}
+
+.user-admin-table {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.user-admin-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-admin-table th,
+.user-admin-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.user-admin-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.user-admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.user-admin-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 0.875rem;
+  margin-right: 5px;
+}

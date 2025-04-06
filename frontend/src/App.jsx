@@ -16,6 +16,9 @@ import UserBlogList from './components/Blog/UserBlogList';
 import BlogDetail   from './components/Blog/BlogDetail';
 import BlogForm     from './components/Blog/BlogForm';
 
+// Composant Admin
+import UserAdmin    from './components/Admin/UserAdmin';
+
 function App() {
   return (
     <Router>
@@ -33,6 +36,7 @@ function App() {
             <Route path="/blogs/:id/edit" element={<BlogForm />} />
             <Route path="/my-blogs"       element={<UserBlogList />} />
             <Route path="/profile"        element={<Profile />} />
+            <Route path="/admin/users"    element={<UserAdmin />} />
           </Route>
         </Routes>
       </Layout>

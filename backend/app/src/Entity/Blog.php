@@ -41,10 +41,10 @@ use ApiPlatform\Metadata\Link;
     uriTemplate: '/user/blogs',
     operations: [
         new GetCollection(
-            security: "is_granted('ROLE_USER')",
-            provider: GetUserBlogsProvider::class,
             normalizationContext: ['groups' => ['blog:read', 'user:read']],
-            name: 'get_user_blogs'
+            security: "is_granted('ROLE_USER')",
+            name: 'get_user_blogs',
+            provider: GetUserBlogsProvider::class
         )
     ]
 )]
@@ -53,19 +53,19 @@ class Blog
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['blog:read'])]
+    #[Groups(['blog:read', 'user:admin:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['blog:read'])]
+    #[Groups(['blog:read', 'user:admin:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['blog:read'])]
+    #[Groups(['blog:read', 'user:admin:read'])]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['blog:read'])]
+    #[Groups(['blog:read', 'user:admin:read'])]
     private ?\DateTimeInterface $dateAdd = null;
 
     #[ORM\ManyToOne(inversedBy: 'blogs')]
@@ -74,7 +74,7 @@ class Blog
     private ?User $author = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['blog:read'])]
+    #[Groups(['blog:read', 'user:admin:read'])]
     private ?\DateTimeInterface $dateUpdate = null;
 
     public function getId(): ?int

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Dto\RegisterUserDto;
@@ -26,25 +27,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(
             uriTemplate: '/register',
             input: RegisterUserDto::class,
-            processor: RegisterUserProcessor::class,
-            output: false
+            output: false,
+            processor: RegisterUserProcessor::class
         ),
-    ]
-)]
-#[ApiResource(
-    operations: [
         new Get(
             uriTemplate: '/user/profile',
-            provider: GetUserProfileProvider::class,
+            normalizationContext: ['groups' => ['user:read', 'user:profile']],
             security: "is_granted('ROLE_USER')",
-            normalizationContext: ['groups' => ['user:read', 'user:profile']]
+            provider: GetUserProfileProvider::class
         ),
         new Put(
             uriTemplate: '/user/profile',
-            processor: UpdateUserProfileProcessor::class,
-            input: UpdateUserDto::class,
+            normalizationContext: ['groups' => ['user:read', 'user:profile']],
             security: "is_granted('ROLE_USER')",
-            normalizationContext: ['groups' => ['user:read', 'user:profile']]
+            input: UpdateUserDto::class,
+            processor: UpdateUserProfileProcessor::class
+        ),
+        new GetCollection(
+            uriTemplate: '/admin/users',
+            normalizationContext: ['groups' => ['user:admin:read']],
+            security: "is_granted('ROLE_ADMIN')",
         ),
     ]
 )]
@@ -57,14 +59,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['user:read', 'user:profile'])]
+    #[Groups(['user:read', 'user:profile', 'user:admin:read'])]
     private ?string $email = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
-    #[Groups(['user:profile'])]
+    #[Groups(['user:profile', 'user:admin:read'])]
     private array $roles = [];
 
     /**
@@ -74,17 +76,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:profile'])]
+    #[Groups(['user:read', 'user:profile', 'user:admin:read'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:profile'])]
+    #[Groups(['user:read', 'user:profile', 'user:admin:read'])]
     private ?string $lastname = null;
 
     /**
      * @var Collection<int, Blog>
      */
     #[ORM\OneToMany(targetEntity: Blog::class, mappedBy: 'author', orphanRemoval: true)]
+    #[Groups(['user:admin:read'])]
     private Collection $blogs;
 
     public function __construct()
